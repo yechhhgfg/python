@@ -5,7 +5,23 @@ Render 皮卡丘 using a minimal turtle-like simulator drawing to a Pillow image
 import math
 from PIL import Image, ImageDraw
 
-IMG_W, IMG_H = 1000, 800
+import sys
+
+# 默认分辨率（可通过命令行传参覆盖）
+DEFAULT_W, DEFAULT_H = 1000, 800
+
+def get_canvas_size():
+    # 用法: python scripts/render_pikachu_pil.py [width] [height] [output]
+    if len(sys.argv) >= 3:
+        try:
+            w = int(sys.argv[1])
+            h = int(sys.argv[2])
+            return w, h
+        except Exception:
+            pass
+    return DEFAULT_W, DEFAULT_H
+
+IMG_W, IMG_H = get_canvas_size()
 ORIGIN_X, ORIGIN_Y = IMG_W // 2, IMG_H // 2
 
 class TurtleSim:
@@ -267,4 +283,10 @@ def render_to_png(path='皮卡丘_render.png'):
     print(path)
 
 if __name__ == '__main__':
-    render_to_png()
+    # optional output filename third arg
+    out = None
+    if len(sys.argv) >= 4:
+        out = sys.argv[3]
+    else:
+        out = f"皮卡丘_render_{IMG_W}x{IMG_H}.png"
+    render_to_png(out)
